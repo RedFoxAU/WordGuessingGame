@@ -1,4 +1,4 @@
 name = "word-guessing-game"
 compatibility_date = "2024-06-01"
 [build]
-command = "pip install -r requirements.txt && ICTPRG302-AT3-WordGuessingGame-20250604.py"
+command = "pip install -r requirements.txt && server.py"
