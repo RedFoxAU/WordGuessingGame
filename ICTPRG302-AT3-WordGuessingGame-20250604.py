@@ -9,14 +9,59 @@
 Prototype for a Wordle-style game. This python script differs from the NYT. Not the same as NYT one, its different.
 """
 import random
+import string
 
-# Dependencies
-target_words_file = "target_words.txt"
-all_words_file = "all_words.txt"
+TARGET_WORDS_FILE = "target_words.txt"
+ALL_WORDS_FILE = "all_words.txt"
+HISTORY_FILE = "game_history.txt"
+MAX_ATTEMPTS = 5
+DEBUG_PASSWORD = "password"
 
-# Development mode
-# Remove for production
-dev_debug = 1
+# Files read with open - context manager
+def load_words(filename):
+    # (1) Using 'with open' for file reading
+    with open(filename, 'r') as f:
+        return [word.strip().lower() for word in f.read().split()]
+
+# User Help Function
+def show_help():
+    print("\nWelcome to the Word Guessing Game!")
+    print("Rules:")
+    print("* The word is 5 letters long.")
+    print("* Only English letters (a-z, A-Z).")
+    print("* Invalid guesses don't count against your attempts.")  # (8)
+    print("Scoring:")
+    print("* ✔ = correct letter in correct position")  # (7)
+    print("* ○ = correct letter in wrong position")    # (7)
+    print("* ✖ = letter not in word\n")                # (7)
+
+#
+def score_guess(guess, target_word):
+    score = [0] * len(target_word)
+    target_list = list(target_word)
+
+    for i in range(len(guess)):
+        if guess[i] == target_word[i]:
+            score[i] = 2
+            target_list[i] = None
+
+    for i in range(len(guessW)):
+        if guess[i] != target_word[i] and guess[i] in target_list:
+            score[i] = 1
+            target_list[target_list.index(guess[i])] = None
+
+    return score
+
+def display_score(guess, scores):
+    guess_chars = list(guess.upper())  # (4)
+    symbols = {2: '✔', 1: '○', 0: '✖'}  # (7)
+    result = [symbols[s] for s in scores]
+    print(' '.join(guess_chars))
+    print(' '.join(result))  # (3) print(*scores) logic applied here with join()
+    print()
+
+# Development mode - for internal testing only
+dev_debug = False
 print("\n----- Prototype - Internal Testing - Wordle Game -----\n")
 dev_on = input("Enter developer password below (and/or press Enter to continue)\n\n>>> ")
 
