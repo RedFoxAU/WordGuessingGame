@@ -16,19 +16,22 @@ all_words_file = "all_words.txt"
 
 # Development mode
 # Remove for production
-dev_debug = False
+dev_debug = 1
 print("\n----- Prototype - Internal Testing - Wordle Game -----\n")
 dev_on = input("Enter developer password below (and/or press Enter to continue)\n\n>>> ")
 
+# Game Settings
+user_attempts = 1  # Counter for attempts
+user_attempts_max = 5  # Max attempts
+
 if dev_on == "password":
-    dev_debug = True
+    dev_debug = 1
     print("\nDeveloper mode enabled                                                                           DEBUG ON")
     print("                                                                                                 DEBUG ON - User attempt: ", user_attempts)
     print("                                                                                                 DEBUG ON - User attempts max: ", user_attempts_max)
-    print("                                                                                                 DEBUG ON - Valid characters: ", valid_characters)
     print("")
 else:
-    dev_debug = False
+    dev_debug = 0
     print("\nNormal Mode enabled\n")
 
 # Read the files
@@ -45,13 +48,11 @@ valid_words = valid_data.split()
 
 # remove whitespace and force lowercase
 target_words = [word.strip().lower() for word in target_data.split()]
-if dev_debug == 1:
+if dev_debug == True:
     print("                                                                                                 DEBUG ON - Target Words read: ",len(target_words))
 valid_words = [word.strip().lower() for word in valid_data.split()]
 if dev_debug == 1:
     print("                                                                                                 DEBUG ON - Valid Words read: ",len(valid_words))
-
-
 
 # Pick a Target word at random
 target_word = random.choice(target_words)
@@ -87,6 +88,7 @@ def score_guess(guess, target_word):
             else:
                 score[x] = 0
     return score
+
 
 # Welcome message to User
 user_name = input("Hello. We heard you like Word Guessing Games. \nPlease enter your name: ")
