@@ -88,7 +88,7 @@ def play_game(dev_debug):  # DEBUG mode - remove for production
     while attempts < MAX_ATTEMPTS:
         print(f"\nAttempt {attempts + 1} of {MAX_ATTEMPTS}")
         if dev_debug:  # DEBUG mode - remove for production
-            print(f"DEBUG: Target word is, {target_word.upper():>80}")
+            print(f"DEBUG: Target word is {target_word.upper()}".rjust(80))
 
         guess = input("Enter your guess: ").lower()
 
