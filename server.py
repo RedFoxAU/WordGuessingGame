@@ -1,11 +1,22 @@
-from flask import Flask
-import game
+from flask import Flask, request, jsonify
+import game  # your existing game.py
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return game.main()  # return game output as string
+# Example: keep game state per session (simplified)
+game_state = None
 
-if __name__ == "__main__":
-    app.run()
+@app.route('/play', methods=['POST'])
+def play():
+    global game_state
+    data = request.json
+    user_input = data.get('input', '')
+
+    # Call your game function — you might need to adapt here
+    # For example, if your game.py has a `game(input)` function:
+    output = game.game(user_input)
+
+    return jsonify({"output": output})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
