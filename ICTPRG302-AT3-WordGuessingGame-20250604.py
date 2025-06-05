@@ -126,7 +126,7 @@ def main():
 
         again = input("\nWow! How fun was that?\n Shall we Play again? (y/n): ").strip().lower()
         if again != 'y':
-            print(f"Thanks for playing, {user_name}!")
+            print(f"\nThanks for playing, {user_name}!\n")
             break
 
 # Game loop
