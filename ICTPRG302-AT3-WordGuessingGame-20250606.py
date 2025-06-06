@@ -102,18 +102,20 @@ def lowest_score():
 
     return lowest_score, mvp_user
 # Function to find the MVP user and their lowest score
-def find_mvp_user():
+def find_mvp_user(lowest_score, mvp_user):
     history = load_history(HISTORY_FILE)
     user_scores = {}
+    lowest_score = MAX_ATTEMPTS
 
     for line in history:
         if line.startswith('X-'):
             continue
-        try
+        else:
+            score, user = line.lstrip().split('-')
+    if score < lowest_score:
+        lowest_score= int(score)
+        user = mvp_user.strip().upper()
 
-    mvp_user = None
-    user_scores = {}
-    lowest_score = float('inf')
 
     for entry in history:
         if entry.startswith('X-'):
@@ -129,8 +131,6 @@ def find_mvp_user():
                 lowest_score = score
                 mvp_user = user
 
-        lowest_score = user_scores[user]
-
     return lowest_score, mvp_user
 
 # Function to find Historic data
@@ -143,15 +143,15 @@ def history_fails(historic_attempts):
     history_words = load_history(HISTORY_FILE)
     fails = [word for word in history_words if word.startswith('X-')]
     #historic_wins = history_attempts(history_words, fails, historic_wins=history_wins)
-    historic_wins = historic_attempts - fails
+    historic_wins = [word for word in historic_attempts if word not in fails]
     return fails, historic_wins
 
 def history_wins(history_words, fails, historic_wins):
-    historic_wins = history_words - fails
+    historic_wins = [word for word in history_words if word not in fails]
     return historic_wins
 
 def average_attempts(history_wins, history_attempts):
-    avg_attempts = history_attempts / history_wins
+    avg_attempts = len(history_attempts) / len(history_wins)
    # print(f"\nAverage Attempts: {avg_attempts}\n")
     return avg_attempts
 
@@ -185,9 +185,10 @@ def play_game(dev_debug, user_name):  # DEBUG mode - remove for production
         scores = score_guess(guess, target_word)
         display_score(guess, scores)
         attempts += 1
-
+        historic_attempts = history_attempts()
+        fails, historic_wins = history_fails(historic_attempts)
         avg_score = average_attempts(history_wins, history_attempts)
-        mvp_user, lowest_score = find_mvp_user()
+        lowest_score_value, mvp_user = lowest_score()
 
         if guess == target_word:
             print("\n Congratulations! You guessed the word!\n")
@@ -207,7 +208,7 @@ def play_game(dev_debug, user_name):  # DEBUG mode - remove for production
 """
 This is the main function of the game.
 """
-def main(historic_wins=history_wins, history_attempts=history_attempts, lowest_score=find_mvp_user, mvp_user=find_mvp_user):
+def main():
     print("\n----- Prototype - Internal Testing - Wordle Game -----\n".rjust(80))
     dev_on = input("DEBUG: Enter developer password (or press Enter to continue): ")
     if dev_on == DEBUG_PASSWORD:
@@ -220,8 +221,17 @@ def main(historic_wins=history_wins, history_attempts=history_attempts, lowest_s
     show_help()
 
     while True:
-        play_game(dev_debug, user_name, history_wins=historic_wins)  # DEBUG mode - remove for production
-        avg_score = average_attempts(historic_wins, history_attempts)
+        historic_attempts = history_attempts()
+        fails, historic_wins = history_fails(historic_attempts)
+        avg_score = average_attempts(historic_wins, historic_attempts)
+        lowest_score, mvp_user = find_mvp_user(None, None)
+        # historic_attempts = history_attempts()
+        # history_fails, historic_wins = history_fails(history_attempts)
+
+        play_game(dev_debug, user_name)  # DEBUG mode - remove for production
+
+
+
         print(f"Lowest Score is: {lowest_score} attempts by {mvp_user}.\n")
         print("Average number of attempts on winning games: ", {avg_score})
 
