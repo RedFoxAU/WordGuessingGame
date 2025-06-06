@@ -2,3 +2,8 @@
 *.env
 *.swp
 tempCodeRunnerFile.py
+ICTPRG*.py
+Version*.py
+.vscode/
+.idea/
+Tests/
