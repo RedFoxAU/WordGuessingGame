@@ -17,7 +17,6 @@ LETTER_INCORRECT = '✖'  # Options: 0 ✖ - ×
 # Fancy ASCII art for the game name
 def print_game_name():
     print(r"")
-    print("\n\n")
     print(r"")
     print(r" _       __                  __  ______                          _                 ______")
     print(r"| |     / /____   _____ ____/ / / ____/__  __ ___   _____ _____ (_)____   ____ _  / ____/____ _ ____ ___   ___")
@@ -30,9 +29,6 @@ def print_game_name():
 
 # Fancy ASCII art for Congratulations - in one guess
 def print_congrats_one():
-    print("\n")
-    print(r"")
-    print(r"")
     print(r"__        _______        __  _")
     print(r"\ \      / / _ \ \      / / | |")
     print(r" \ \ /\ / / | | \ \ /\ / /  | |")
@@ -55,8 +51,6 @@ def print_congrats_one():
 
 # Fancy ASCII art for Congratulations - in two or more guesses
 def print_congrats_two():
-    print("\n")
-    print(r"")
     print(r"")
     print(r"   __   _____  _   _  __      _____  _  _  ")
     print(r"   \ \ / / _ \| | | | \ \    / / _ \| \| | ")
@@ -70,12 +64,9 @@ def print_congrats_two():
     print(r"     |_| \___/ \___/    \_/\_/ \___/|_|\_| ")
     print(r"                                           ")
     print(r"")
-    print("")
 
 # Fancy ASCII art for the last guess
 def print_last_guess():
-    print(r"")
-    print(r"")
     print(r" _        _    ____ _____    ____ _   _ _____ ____ ____  ")
     print(r"| |      / \  / ___|_   _|  / ___| | | | ____/ ___/ ___| ")
     print(r"| |     / _ \ \___ \ | |   | |  _| | | |  _| \___ \___ \ ")
@@ -157,42 +148,89 @@ def display_score(guess, scores):
 
 # Functions to save and append game history, calculate average attempts.
 def save_history(attempts):
-        with open(HISTORY_FILE, "a+") as f:
-            f.write(f"{attempts}\n")
+    with open(HISTORY_FILE, "a+") as f:
+        f.write(f"{attempts}\n")
 
 def history_attempts():
-    historic_attempts = 0
+   # historic_attempts = 1
     history_words = load_history(HISTORY_FILE)
     historic_attempts = len(history_words)
     return historic_attempts
 
 def history_fails():
+    historic_attempts = 0
     history_words = load_history(HISTORY_FILE)
     fails = [word for word in history_words if word.startswith('x-')]
-    history_count = len(history_words)
+    history_count = len(history_words) + 1
     history_wins = history_count - len(fails)
-    return history_count, history_wins, fails
+    avg_score = history_count / history_wins
+    avg_score = round(avg_score, 2)
+    historic_attempts = len(history_words)
+    loss_games = historic_attempts - history_wins
+    loss_games = loss_games
+    return history_count, history_wins, fails, avg_score, loss_games
 
-def average_attempts(history_words):
-    total_turns = 0
-    win_count = 0
+#def average_attempts(history_words):
+#    avg_score = history_count / history_wins#
 
-    for entry in history_words:
-        if not entry.lower().startswith('x-'):
-            try:
-                turns = int(entry.split("-")[0])
-                total_turns += turns
-                win_count += 1
-            except ValueError:
-                continue
+#    return total_turns / win_count
 
-    return total_turns / win_count if win_count else 0
+#End game statistics function
+def end_game_statistics(history_words, history_wins):
+    total_games = len(history_words)
+    total_losses = total_games - history_wins
+    percent_game_won = round((history_wins / total_games) * 100, 2) if total_games > 0 else 0
+    total_losses = total_losses + 1
+    print(f"\nTotal Games Played: {total_games}")
+    print(f"Total Games Won: {history_wins}")
+    print(f"Total Games Lost: {total_losses}")
+    print(f"Percentage of Games Won: {percent_game_won}%")
+
+def game_report(history_words, history_wins, avg_score, attempts, user_name, history_count, loss_games):
+    save_history(f"{attempts}-{user_name.upper()}")
+    history_word_count = len(history_words)
+    history_count = history_count
+    history_word_count = history_word_count + 1
+    loss_games = loss_games + 1
+
+   # loss_games = history_count - history_wins  # Calculate losses
+
+   # history_word_count = history_word_count + 1 # Increment total games played by 1 for the current game
+    percent_game_won = round(history_wins / history_word_count * 100, 2)  # Calculate percentage of games won
+    print(f"Total Games Played: {history_word_count}\nTotal Games Won: {history_wins}\nTotal Games Lost: {loss_games}")
+    print(f"Percentage of Games Won: {percent_game_won}% | Average number of guesses those who Win take:", (avg_score))
+  #  save_history(f"{attempts}-{user_name.upper()}")
+
+# def end_game_win(history_words, history_wins, avg_score, attempts, user_name):
+#     save_history(f"{attempts}-{user_name.upper()}")
+#     # Game report
+#     history_wins += 1  # Increment wins for the user
+#     # Results
+#     history_word_count = len(history_words)
+#     history_word_count = history_word_count + 1 # Increment total games played by 1 for the current game
+#     history_losses = history_word_count - history_wins  # Calculate losses
+#     percent_game_won = round(history_wins / history_word_count * 100, 2)  # Calculate percentage of games won
+#     print(f"Total Games Played: {history_word_count}\nTotal Games Won: {history_wins}\nTotal Games Lost: {history_losses}")
+#     print(f"Percentage of Games Won: {percent_game_won}% | Average number of guesses those who Win take:", round(avg_score * 100, 2))
+#   #  save_history(f"{attempts}-{user_name.upper()}")
+
+# def end_game_loss(history_words, history_wins, avg_score, attempts, user_name):
+#     save_history(f"{attempts}-{user_name.upper()}")
+#     # Results
+#     history_word_count = len(history_words)
+#     history_word_count = history_word_count + 1 # Increment total games played by 1 for the current game
+#     history_losses = history_word_count - history_wins  # Calculate losses
+#     percent_game_won = round(history_wins / history_word_count * 100, 2)  # Calculate percentage of games won
+#     print(f"Total Games Played: {history_word_count}\nTotal Games Won: {history_wins}\nTotal Games Lost: {history_losses}")
+#     print(f"Percentage of Games Won: {percent_game_won}% | Average number of guesses those who Win take:", round(avg_score * 100, 2))
+#    # save_history(f"{attempts}-{user_name.upper()}")
 
 # Function to play the game / Game loop
-def play_game(dev_debug, user_name, history_wins, historic_attempts, history_count):  # DEBUG mode - remove for production
+def play_game(dev_debug, user_name, history_wins, avg_score, historic_attempts, history_count, loss_games):  # DEBUG mode - remove for production
     target_words = load_target_words(TARGET_WORDS_FILE)
     valid_words = load_all_words(ALL_WORDS_FILE)
     history_words = load_history(HISTORY_FILE)
+    history_count = history_count
 
     if dev_debug:  # DEBUG mode - remove for production
         print(f"DEBUG: Loaded {len(target_words)} target words and {len(valid_words)} valid words.".rjust(80))
@@ -210,7 +248,7 @@ def play_game(dev_debug, user_name, history_wins, historic_attempts, history_cou
         if attempts == MAX_ATTEMPTS - 1:
             print_last_guess()
             print(f"\nYou have {MAX_ATTEMPTS - attempts} attempt left, {user_name}!")
-            input("[Deep Breaths! This is your last attempt coming up. Press Enter to proceed to the last guess!]\n\n")
+            input("[Deep Breaths! This is your last attempt coming up.] - Relax, and press ENTER to proceed\n")
 
         guess = input("Enter your guess: ").lower()
 
@@ -219,11 +257,26 @@ def play_game(dev_debug, user_name, history_wins, historic_attempts, history_cou
             print("Invalid input. Use 5 letters - Please try again!")
             continue
 
-        if guess not in string.ascii_letters:
-            for g in guess:
-                if g not in string.ascii_letters:
-                    print(f"Invalid input. Use letters: {string.ascii_letters} only. Please try again!")
-                    continue
+        if all(g in string.ascii_letters for g in guess):
+            pass  # Valid characters
+        else:
+            print(f"Invalid input. Use letters: {string.ascii_letters} only. Please try again!")
+
+        # if guess not in string.ascii_letters:
+        #     for g in guess:
+        #         if g not in string.ascii_letters:
+        #             print(f"Invalid input. Use letters: {string.ascii_letters} only. Please try again!")
+        #             break
+        #     else:
+        #         continue
+
+        #     for g in guess:
+        #         if g not in string.ascii_letters:
+        #             print("Invalid input. Use letters only.")
+        #             break
+        #     else:
+        #         # Only runs if the loop completes with no break
+        #         print("Valid input!")
 
         if guess not in valid_words:
             print("Not a valid dictionary word. Please try again!")
@@ -232,42 +285,61 @@ def play_game(dev_debug, user_name, history_wins, historic_attempts, history_cou
         # Score validation and calculation
         scores = score_guess(guess, target_word)
         display_score(guess, scores)
-        attempts += 1
+        attempts += 1  #
 
-        avg_score = average_attempts(history_words)  # Calculate average attempts on winning games
+       # avg_score = avg_score # Calculate average attempts on winning games
 
-        if guess == target_word :
+        if guess == target_word: # Check if the guess is correct in one guess
+          #  history_wins += 1  #
             if attempts == 1:
                 print_congrats_one()
-                print(f"\nCongratulations, {user_name}! You guessed the word '{target_word.upper()}' in ONE ATTEMPT!\n")
-                print("Average number of guesses to Win:", float(avg_score))
-                print(f"Total Games Played: {len(history_words)}")
+                print(f"\nCongratulations, {user_name}! You guessed the word {target_word.upper()} in ONE ATTEMPT!\n")
+              #  history_wins += 1
+                # # Game report
+                #history_wins += 1  # Increment wins for the user
+                # # Results
+                # history_word_count = len(history_words)
+                # history_word_count = history_word_count + 1 # Increment total games played by 1 for the current game
+                # history_losses = history_word_count - history_wins  # Calculate losses
+                # percent_game_won = round(history_wins / history_word_count * 100, 2)  # Calculate percentage of games won
 
+                # print(f"Total Games Played: {history_word_count}\nTotal Games Won: {history_wins}\nTotal Games Lost: {history_losses}")
+                # print(f"Percentage of Games Won: {percent_game_won}% | Average number of guesses those who Win take:", round(avg_score * 100, 2))
+                # save_history(f"{attempts}-{user_name.upper()}")
+                game_report(history_words, history_wins, avg_score, attempts, user_name, history_count, loss_games)  # Save scores and user name in score sheet for future ranking feature
             else:
-                print_congrats_two()
-                print(f"\nCongratulations! You guessed the word in {attempts} attempts!")
-                print("Average number of guesses to Win ", float(avg_score))
+                print_congrats_two()  # Check if the guess is correct in two or more guesses
+                print(f"Congratulations! {user_name}! You guessed the word {target_word.upper()} in {attempts} attempts!")
+               # history_wins += 1
+                game_report(history_words, history_wins, avg_score, attempts, user_name, history_count, loss_games) # Save scores and user name in score sheet for future ranking feature
 
-            save_history(f"{attempts}-{user_name.upper()}")  # Save scores and user name in score sheet for future ranking feature
+
+                # Game report
+                # Game report
+            #    print(f"Total Games Played: {len(history_words)}\nTotal Games Won: {history_wins}\nTotal Games Lost: {len(history_words) - history_wins}\n")
+            #    print(f"Percentage of Games Won: {round((history_wins / len(history_words)) * 100, 2)}%")
+            #    print(f"Total Games Played: {len(history_words)}")
+            #    print("Average number of guesses those who Win take:", (avg_score))
+       #         save_history(f"{attempts}-{user_name.upper()}")  # Save scores and user name in score sheet for future ranking feature
             return
 
     # Function to save and append game history for failed attempts
 
-    end_stat = len(history_words)
-    end_stat = end_stat + 1 # Increment total games played by 1 for the current game
+    # end_stat = len(history_words)
+    # end_stat = end_stat + 1 # Increment total games played by 1 for the current game
+
     print(f"\nGame Over! The word was: {target_word.upper()}\n")
     print(f"Sorry, {user_name}, you didn't guess the word in {MAX_ATTEMPTS} attempts. Please play again!\n")
     save_history(f"X-{user_name.upper()}") # Save 'X' for failed attempts in score sheet with user name for future ranking feature
-    print(f"Average number of guesses to Win: {avg_score}")
-    print(f"This was game {end_stat}.\n")
-
+    game_report(history_words, history_wins, avg_score, attempts, user_name, history_count, loss_games)
 """
 This is the main function of the game.
 """
 def main():
-    fails, history_wins, history_count = history_fails()
+    history_count, history_wins, fails, avg_score, loss_games = history_fails()
     history_words = load_history(HISTORY_FILE)
-    avg_score = average_attempts(history_words)
+    attempts = 0
+    # avg_score =
 
     print("\n----- Prototype - Internal Testing - Wordle Game -----\n")
     dev_on = input("DEBUG: Enter developer password (or press Enter to continue): ")
@@ -282,24 +354,26 @@ def main():
     show_help()
 
     while True:
-        fails, history_wins, history_count = history_fails()
-        historic_attempts = history_attempts()
-        avg_score = average_attempts(history_words)
+        history_count, history_wins, fails, avg_score, loss_games = history_fails()
 
-        play_game(dev_debug, user_name, history_wins, historic_attempts, history_count)  # DEBUG mode - remove for production
+     #   historic_attempts, history_count = history_attempts()
+     #   avg_score = average_attempts(history_words)
 
-        end_stat = len(history_words)
-        end_stat = end_stat + 1 # Increment total games played by 1 for the current game
+        play_game(dev_debug, user_name, history_wins, avg_score, fails, history_count, loss_games) # DEBUG mode - remove for production
+
+        # end_stat = len(history_words)
+        # end_stat = end_stat + 1 # Increment total games played by 1 for the current game
 
         print_game_over()
         play_again = input(f"\nWow! How fun was that?\n\nShall we Play again, {user_name}? (y/n): \n")
     #    if play_again != 'y':
-        print("\n\nAverage number of attempts on winning games: ", float(avg_score))
-        print(f"\nThere have been out of ... there have been {fails} unsuccessful games\n")
-        print(f"\nThere have been a total of {historic_attempts} {history_count} successful games so far!\n")
-        print(f"Total Games played: {end_stat}\n")
-        print(f"\nThanks for playing, {user_name}!\n\n")
+      #  print("\n\nAverage number of attempts on winning games: ", round(avg_score))
+    #   #  print(f"\nThere have been out of ... there have been {fails} unsuccessful games\n")
+    #   #  print(f"\nThere have been a total of {historic_attempts} successful games so far!\n")
+    #     print(f"Total Games played: {end_stat}\nTotal Wins: {history_wins}\nTotal Loses: {fails}\n")
+    #     print(f"Thanks for playing, {user_name}!\n\n")
         print_game_over()
+        game_report(history_words, history_wins, avg_score, attempts, user_name, history_count, loss_games)
         print_game_name()
         if play_again != 'y':
             break

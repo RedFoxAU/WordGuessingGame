@@ -6,4 +6,4 @@ ICTPRG*.py
 Version*.py
 .vscode/
 .idea/
-Tests/
+Tests
