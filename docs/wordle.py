@@ -1,9 +1,3 @@
-import js
-
-async def input(prompt=""):
-    print(prompt, end="")
-    return await js.waitInput()
-
 async def main():
     print("Welcome to Mini Word Guess Game!")
     word = "apple"
@@ -17,3 +11,5 @@ async def main():
             print(f"Correct! You got it in {attempts} tries.")
         else:
             print("Incorrect, try again.")
+
+await main()
