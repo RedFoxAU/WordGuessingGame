@@ -20,8 +20,8 @@ async function main() {
       term.write('\r\n');
       const input = inputBuffer.join('');
       inputBuffer.length = 0;
-      inputResolve(input);
-    } else if (char === '\u007f') {
+      if (inputResolve) inputResolve(input);
+    } else if (char === '\u007f') { // backspace
       if (inputBuffer.length > 0) {
         inputBuffer.pop();
         term.write('\b \b');
@@ -34,26 +34,20 @@ async function main() {
 
   await pyodide.runPythonAsync(`
 import sys
-from js import console
+import js
 
-input_buffer = []
-
-def input(prompt=''):
+async def input(prompt=''):
     if prompt:
         print(prompt, end='')
-    return await_input()
-
-def print(*args, **kwargs):
-    console.log(' '.join(map(str, args)))
-
-import js
-async def await_input():
     return await js.waitInput()
 
-globals().update(locals())
-`);
+def print(*args, **kwargs):
+    from js import console
+    console.log(' '.join(map(str, args)))
 
-  // Inject input function
+globals().update(locals())
+  `);
+
   pyodide.globals.set("waitInput", waitInput);
 
   const code = await (await fetch("wordle.py")).text();
